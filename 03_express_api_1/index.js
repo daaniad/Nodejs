@@ -4,6 +4,8 @@ import express from "express";
 import dotenv from "dotenv";
 //importamos el archivo bbdd.js
 import {USERS_BBDD} from "./bbdd.js"
+//importamos morgan
+import logger from "morgan";
 
 //Añadimos el método config de dotenv
 dotenv.config();
@@ -16,6 +18,7 @@ const expressApp = express();
 //middleware para interpretar el formato json y text enviados desde el cliente http
 expressApp.use(express.json());
 expressApp.use(express.text());
+expressApp.use(logger('dev'));
 
 //Obtener los detalles de una cuenta a partir del guid
 expressApp.get('/account/:guid', (req, res) =>  {
@@ -29,6 +32,22 @@ expressApp.get('/account/:guid', (req, res) =>  {
 });
 //Crear una nueva cuenta a partir del guid y name
 expressApp.post('/account', (req, res) =>  {
+    //Extraemos el guid y nombre del body. Obligamos que estén los dos campos para crear un usuario
+    const {guid, name} = req.body;
+    //Si no existe guid o name recibimos el body devolvemos un 400(bad request)
+    if(!guid || !name) return res.status(400).send();
+    //Buscamos los detalles de la cuenta a través del guid recibido por req.params
+    const user = USERS_BBDD.find(user => user.guid === guid);
+     // Si existe el usuario respondemos con un 409 (conflic), 
+     // ya que no se puede crear una cuenta nueva con el mismo guid
+     if (user) return res.status(409).send();
+     // Creamos un objeto nuevo con los datos recibidos con el método push
+     USERS_BBDD.push({
+        guid, name
+     });
+     // Enviamos una respuesta
+     res.send();
+
 
 });
 //Actualizar una nueva cuenta (en lugar de patch también se puede usar put, que si no existe lo crea)
