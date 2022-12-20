@@ -14,6 +14,8 @@ import authSessionRouter from "./routes/authsession.js";
 import { nanoid } from 'nanoid'
 //importamos cookie-parser
 import cookieParser from "cookie-parser";
+//importamos auth_token
+import authTokenRouter from "./routes/auth_token.js"
 
 // Generamos un identificador con la libreria nanoid
 const sessionId = nanoid(); //=> "V1StGXR8_Z5jdHi6B-myT"
@@ -42,6 +44,8 @@ expressApp.use("/account", accountRouter);
 expressApp.use("/auth", authRouter);
 // middleware que hemos importado del router authSessionRouter
 expressApp.use("/auth-session", authSessionRouter)
+//middleware que hemos importado del router authTokenRouter
+expressApp.use("/auth-token", authTokenRouter)
 
 
 expressApp.get("/user", (req, res) => {
