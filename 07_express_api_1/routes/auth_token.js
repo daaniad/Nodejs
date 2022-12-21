@@ -2,11 +2,12 @@ import express from "express";
 import checkEmailPassword from "../utils/check_email_password.js";
 import { USERS_BBDD } from "../bbdd.js";
 import { SignJWT, jwtVerify } from "jose";
+import validateLoginDto from "../DTO/validate_login_dto.js";
 
 const authTokenRouter = express.Router();
 
 //Login con email y password
-authTokenRouter.post("/login", async (req, res) => {
+authTokenRouter.post("/login", validateLoginDto, async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) return res.sendStatus(400);
