@@ -35,7 +35,8 @@ controller.authTokenLogin = async (req, res) => {
 
 controller.authTokenProfile = async (req, res) => {
     //OBTENER CABECERA Y COMPROBAR SU AUTENTICIDAD Y CADUCIDAD
-  const { authorization } = req.headers;
+  const authorization  = req.headers.authorization.split(" ")[1]
+  console.log(authorization)
   if (!authorization) return res.sendStatus(401);
   try {
     //codificamos la clave secreta

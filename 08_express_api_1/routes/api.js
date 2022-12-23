@@ -4,6 +4,7 @@ import authController from "../controllers/auth_controller.js"
 import authSessionController from "../controllers//auth_session_controller.js";
 import authTokenController from "../controllers/auth_token_controller.js"
 import validateLoginDto from "../DTO/validate_login_dto.js";
+import authUserController from "../controllers/users_controller.js"
 
 const router = express.Router();
 
@@ -27,5 +28,10 @@ router.get("/auth-session/profile", authSessionController.authSessionProfile);
 // auth-token routes
 router.post("/auth-token/login", validateLoginDto, authTokenController.authTokenLogin);
 router.get("/auth-token/profile", authTokenController.authTokenProfile);
+
+// Users routes
+
+router.get("/:guid", authUserController.authAccDetails);
+router.patch('/:guid', authUserController.authUpdateUser);
 
 export default router;

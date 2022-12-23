@@ -37,10 +37,6 @@ expressApp.use(logger('dev'));
 
 expressApp.use('/api', apiRouter)
 
-expressApp.get("/user", (req, res) => {
-    res.send("Endpoint fuera del account")
-    })
-
 //Levantamos el servidor en el puerto 3000
 expressApp.listen(PORT, () =>
 console.log(`Server in port ${PORT}`));
