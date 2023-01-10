@@ -1,4 +1,3 @@
-import { USERS_BBDD } from "../bbdd.js";
 import userModel from "../Service/Schemas/user_schema.js";
 
 // Función para validar email y password

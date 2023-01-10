@@ -1,3 +1,4 @@
+import userModel from "../Service/Schemas/user_schema.js";
 import checkEmailPassword from "../utils/check_email_password.js";
 
 
@@ -20,7 +21,7 @@ controller.authAutenticado = async (req, res) => {
     */
     try {
         // Llamamos a la función de validar el email y password
-        const user = checkEmailPassword(email, password);
+        const user = await checkEmailPassword(email, password);
         //Si todo es correcto enviamos la respuesta. 200 OK
         return res.send(`Usuario ${user.name} autenticado`)
     } catch (err) {

@@ -1,6 +1,6 @@
 import checkEmailPassword from "../utils/check_email_password.js";
 import { SignJWT, jwtVerify } from "jose";
-import { USERS_BBDD } from "../bbdd.js";
+import userModel from "../Service/Schemas/user_schema.js";
 
 
 const controller = {}
@@ -15,7 +15,7 @@ controller.authUser = async (req, res) => {
 
  try {
      // Validamos el email y password y obtenemos el guid
-     const { guid } = checkEmailPassword(email, password);
+     const { guid } = await checkEmailPassword(email, password);
      // GENERAR TOKEN Y DEVOLVER TOKEN
      //Construimos el JWT con el guid
      const jwtConstructor = new SignJWT({ guid });
@@ -51,7 +51,8 @@ controller.listAuthUser = async (req, res) => {
          authorization,
          encoder.encode(process.env.JWT_SECRET));
      // Obtenemos los datos del usuario a través de guid
-     const user = USERS_BBDD .find(user => user.guid === payload.guid);
+     const user = await userModel.findById(payload.guid)
+     //const user = USERS_BBDD .find(user => user.guid === payload.guid);
      // Si no obtenemos usuario enviamos un  401 (unauthorized)
      if (!user) return res.sendStatus(401);
      // Borramos la password del objeto obtenido para no mostrarla

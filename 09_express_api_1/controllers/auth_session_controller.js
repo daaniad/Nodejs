@@ -1,11 +1,13 @@
 import { nanoid } from "nanoid";
-import { USERS_BBDD } from "../bbdd.js";
+import userModel from "../Service/Schemas/user_schema.js";
 import checkEmailPassword from "../utils/check_email_password.js";
 
 
-const controller = {}
 
-controller.authUser = (req, res) => {
+const controller = {}
+const sessions = [];
+
+controller.authUser = async (req, res) => {
     // Obtenemos el email y password del body
     const { email, password } = req.body;
     // Si no existe alguno de esos dos campos devolvemos y 400(bad request)
@@ -13,7 +15,7 @@ controller.authUser = (req, res) => {
 
     try {
         // Validamos el email y password y obtenemos el guid para asociarlo con la sesión
-        const { guid } = checkEmailPassword(email, password);
+        const { guid } = await checkEmailPassword(email, password);
         // Generamos un identificador con la libreria nanoid
         const sessionId = nanoid();
         // Añadimos el sessionId y el guid del uusuario al array
@@ -28,7 +30,7 @@ controller.authUser = (req, res) => {
     }
 }
 
-controller.listUser = (req, res) => {
+controller.listUser = async (req, res) => {
     // obtenemos la cookie que recibimos
     const { cookies } = req;
     // Si la cookie no existe enviamos un 401 (unauthorized)
@@ -38,7 +40,8 @@ controller.listUser = (req, res) => {
     // Si no existe enviamos un 401 (unauthorized)
     if (!userSession) return res.sendStatus(401)
     // Obtenemos los datos del usuario a través de guid
-    const user = USERS_BBDD .find(user => user.guid === userSession.guid);
+    const user = await userModel.findById(guid)
+    //const user = USERS_BBDD .find(user => user.guid === userSession.guid);
     // Si no obtenemos usuario enviamos un  401 (unauthorized)
     if (!user) return res.sendStatus(401);
     // Borramos la password del objeto obtenido para no mostrarla
