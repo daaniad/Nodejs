@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
 import userRouter from "./routes/user_router.js"
-import db from "./Services/mysql.js";
 
 // Añadimos el método config de dotenv para utilizar las variables de entorno
 dotenv.config();
