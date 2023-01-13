@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify } from "jose";
 import dao from "../Services/dao.js";
+import md5 from "md5"
 const controller = {};
 
 controller.addUser = async (req, res) => {
@@ -26,7 +27,7 @@ controller.loginUser = async (req, res) => {
   if (!email || !password)
     return res.status(400).send("Error al recibir el body");
   try {
-    const user = await dao.getUserByEmail(email);
+    let user = await dao.getUserByEmail(email);
     if (user.length <= 0) return res.status(404).send("Usuario no registrado");
     const custPassword = md5(password);
     [user] = user;
@@ -44,11 +45,45 @@ controller.loginUser = async (req, res) => {
       .setProtectedHeader({ alg: "HS256", typ: "JWT" })
       .setIssuedAt()
       .setExpirationTime("1h")
-      .sing(encoder.encode(process.env.JWT_SECRET));
+      .sign(encoder.encode(process.env.JWT_SECRET));
     return res.send({ jwt });
   } catch (e) {
     console.log(e.message);
   }
 };
+
+
+controller.deleteUser= async (req,res) => {
+  const { authorization } = req.headers;
+  // Si no existe el token enviamos un 401 (unauthorized)
+  if (!authorization) return res.sendStatus(401);
+  const token = authorization.split(" ")[1];
+
+  try {
+    // codificamos la clave secreta
+    const encoder = new TextEncoder();
+    // verificamos el token con la función jwtVerify. Le pasamos el token y la clave secreta codificada
+    const { payload } = await jwtVerify(
+      token,
+      encoder.encode(process.env.JWT_SECRET)
+    );
+
+    console.log(payload);
+    if (!payload.role) return res.status(409).send("no tiene permiso de administrador");
+    // Buscamos si el id del usuario existe en la base de datos
+    const user = await dao.getUserById(req.params.id)
+    console.log(user);
+    // Si no existe devolvemos un 404 (not found)
+    if (user.length <= 0) return res.status(404).send("el usuario no existe")
+    // Si existe, eliminamos el usuario por el id
+    await dao.deleteUser(req.params.id)
+    // Devolvemos la respuesta
+    return res.send(`Usuario con id ${req.params.id} eliminado`)
+  } catch (e) {
+    console.log(e.message);
+  }
+
+
+}
 
 export default controller;

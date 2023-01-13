@@ -15,7 +15,21 @@ try{
 } finally {
     conn && await conn.end();
     }
-}
+};
+
+userQueries.getUserById = async (id) => {
+    // Conectamos con la base de datos y buscamos si existe el usuario por el email.
+    let conn = null
+try{
+    conn = await db.createConnection();
+    console.log(id);
+    return await db.query('SELECT * FROM usuarios WHERE id = ?', id, 'select', conn)
+} catch (e) {
+    throw new Error(e)
+} finally {
+    conn && await conn.end();
+    }
+    };
 
 userQueries.addUser = async (userData) => {
     // Conectamos con la base de datos y añadimos el usuario.
@@ -37,6 +51,18 @@ userQueries.addUser = async (userData) => {
     } catch (e) {
        throw new Error(e)
     } finally {
+        conn && await conn.end();
+    }
+}
+
+userQueries.deleteUser = async (id) => {
+    let conn = null
+    try {
+        conn = await db.createConnection()
+        return await db.query('DELETE FROM usuarios WHERE id=?', id, 'delete', conn)
+    } catch (e) {
+        throw new Error(e)
+    }   finally {
         conn && await conn.end();
     }
 }

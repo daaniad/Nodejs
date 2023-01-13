@@ -1,4 +1,5 @@
 // Archivo configuracion MySQL
+import mysql from "mysql2"
 
 
 let db = {}
