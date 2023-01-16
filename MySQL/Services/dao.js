@@ -13,4 +13,6 @@ dao.deleteUser = async (id) => {
   await userQueries.deleteUser(id);
 };
 
+dao.updateUser = async (id, userData) => await userQueries.updateUser(id, userData);
+
 export default dao;

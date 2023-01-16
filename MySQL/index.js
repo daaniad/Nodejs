@@ -2,7 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
-import userRouter from "./routes/user_router.js"
+import userRouter from "./routes/user_router.js";
+import productRouter from "./routes/produtcs_router.js";
 
 // Añadimos el método config de dotenv para utilizar las variables de entorno
 dotenv.config();
@@ -18,5 +19,7 @@ app.use(cookieParser());
 app.use("/user", userRouter)
 
 //await db.createConnection();
+
+app.use("/product", productRouter)
 
 export default app;

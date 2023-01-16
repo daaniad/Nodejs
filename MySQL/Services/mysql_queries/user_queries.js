@@ -1,6 +1,7 @@
 import db from "../mysql.js"
 import moment from "moment/moment.js"
 import md5 from "md5";
+import utils from "../../utils/utils.js";
 
 const userQueries = {};
 
@@ -66,5 +67,35 @@ userQueries.deleteUser = async (id) => {
         conn && await conn.end();
     }
 }
+
+// Modificar un usuario por su id
+userQueries.updateUser = async (id, userData) => {
+    // Conectamos con la base de datos y añadimos el usuario.
+    let conn = null
+    try {
+        conn = await db.createConnection();
+        // Creamos un objeto con los datos que nos puede llegar del usuario a modificar en la base de datos.
+        // Encriptamos la password con md5 si nos llega por el body, sino la declaramos como undefined
+        // y usamos la libreria momentjs para actualizar la fecha.
+        let userObj = {
+           nombre: userData.nombre,
+           apellidos: userData.apellidos,
+           direccion: userData.direccion,
+           email: userData.email,
+           password: userData.password ? md5(userData.password) : undefined,
+           fechaMod: moment().format("YYYY-MM-DD HH:mm:ss"),
+           role: userData.role
+        }
+        // Eliminamos los campos que no se van a modificar (no llegan por el body)
+        userObj = await utils.removeUndefinedKeys(userObj)
+
+        return await db.query('UPDATE usuarios SET ? WHERE id = ?', [userObj, id], 'insert', conn);
+    } catch (e) {
+       throw new Error(e);
+    } finally {
+        conn && await conn.end();
+    }
+};
+
 
 export default userQueries
