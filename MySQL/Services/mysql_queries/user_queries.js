@@ -39,9 +39,10 @@ userQueries.addUser = async (userData) => {
         conn = await db.createConnection()
         // Creamos un objeto con los datos del usuario a guardar en la base de datos.
         // Encriptamos la password con md5 y usamos la libreria momentjs para registrar la fecha actual
+        console.log(userData);
         let userObj = {
-           nombre: userData.nombre,
-           apellidos: userData.apellidos,
+           nombre: userData.name,
+           apellidos: userData.surname,
            direccion: userData.direccion,
            email: userData.email,
            password: md5(userData.password),

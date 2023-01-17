@@ -4,9 +4,9 @@ import md5 from "md5"
 const controller = {};
 
 controller.addUser = async (req, res) => {
-  const { nombre, email, password } = req.body;
+  const { name, email, password } = req.body;
   // Si no alguno de estos campos recibidos por el body devolvemos un 400 (bad request)
-  if (!nombre || !email || !password)
+  if (!name || !email || !password)
     return res.status(400).send("Error al recibir el body");
   // Buscamos el usuario en la base de datos
   try {
@@ -16,7 +16,7 @@ controller.addUser = async (req, res) => {
     // Si no existe lo registramos
     const addUser = await dao.addUser(req.body);
     if (addUser)
-      return res.send(`Usuario ${nombre} con id: ${addUser} registrado`);
+      return res.send(`Usuario ${name} con id: ${addUser} registrado`);
   } catch (e) {
     console.log(e.message);
   }
