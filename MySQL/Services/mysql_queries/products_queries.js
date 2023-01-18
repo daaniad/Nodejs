@@ -1,6 +1,7 @@
 import db from "../mysql.js";
 import moment from "moment/moment.js";
 
+const imageQueries = {}
 const productQueries = {};
 
 productQueries.addImage = async (imageData) => {
@@ -37,5 +38,24 @@ productQueries.getImageById = async (id) => {
         conn && (await conn.end());
     }
 };
+
+productQueries.deleteImage = async (id) => {
+    // Conectamos con la base de datos y buscamos si existe la imagen por su id.
+    let conn = null;
+    try {
+        conn = await db.createConnection();
+        return await db.query(
+            "DELETE * FROM imagenes WHERE id = ?", id, "select", conn
+        );
+    } catch(e) {
+        throw new Error(e);
+    } finally {
+        conn && (await conn.end());
+    }
+};
+
+productQueries.insertProduct = async (productData) => {
+
+}
 
 export default productQueries;
