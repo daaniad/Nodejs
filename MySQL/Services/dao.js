@@ -21,4 +21,10 @@ dao.addImage = async (imageData) => await productQueries.addImage(imageData);
 //Obtener imagen por su id
 dao.getImageById = async (id) => await productQueries.getImageById(id);
 
+// Obtener producto por su referencia
+dao.getProductByRef = async (reference) => await productQueries.getProductByRef(reference);
+
+// Añadir producto
+dao.insertProduct = async (productData) => await productQueries.addProduct(productData);
+
 export default dao;

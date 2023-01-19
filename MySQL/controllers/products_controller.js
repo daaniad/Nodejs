@@ -45,7 +45,28 @@ controller.getImage = async (req, res) => {
 };
 
 controller.addProduct = async (req, res) => {
-  
+  // controlar que viene el body
+  const {name, description, price, stock, reference} = req.body;
+  if (!name || !description || !price || !stock || !reference) {
+    res.status(400).send("Error al recibir el body");
+  }
+  try {
+    const product = await dao.getProductByRef(reference);
+    // Si existe el producto, devolvemos 409 (conflict)
+    if (product.length > 0) return res.status(409).send("Producto ya existe");
+    // Si no existe, lo añadimos
+    const insertProduct = await dao.insertProduct(req.body);
+    if (insertProduct) return res.send(`Producto ${name} con id${insertProduct} añadido`)
+  } catch (e) {
+    console.log(e.message);
+
+  }
+  // Buscamos si existe producto por la referencia
+  // añadimos producto producto detalle  -> creamos query para añadir producto (insert), creamos el dao
+  // nos devuelve el id del producto
+  // utilizamos la libreria express-upload para subir la imagen 
+  // Añadimos el path a la tabla imagen y el id que hemos obtenido del producto 
+  // devolvemos respuesta al cliente con el id del producto creado ok
 }
 
 export default controller;
