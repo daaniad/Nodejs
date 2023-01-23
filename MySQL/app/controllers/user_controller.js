@@ -1,6 +1,6 @@
 import { SignJWT, jwtVerify } from "jose";
 import dao from "../Services/dao.js";
-import md5 from "md5"
+import md5 from "md5";
 const controller = {};
 
 controller.addUser = async (req, res) => {
@@ -52,8 +52,7 @@ controller.loginUser = async (req, res) => {
   }
 };
 
-
-controller.deleteUser= async (req,res) => {
+controller.deleteUser = async (req, res) => {
   const { authorization } = req.headers;
   // Si no existe el token enviamos un 401 (unauthorized)
   if (!authorization) return res.sendStatus(401);
@@ -69,35 +68,35 @@ controller.deleteUser= async (req,res) => {
     );
 
     console.log(payload);
-    if (!payload.role) return res.status(409).send("no tiene permiso de administrador");
+    if (!payload.role)
+      return res.status(409).send("no tiene permiso de administrador");
     // Buscamos si el id del usuario existe en la base de datos
-    const user = await dao.getUserById(req.params.id)
+    const user = await dao.getUserById(req.params.id);
     console.log(user);
     // Si no existe devolvemos un 404 (not found)
-    if (user.length <= 0) return res.status(404).send("el usuario no existe")
+    if (user.length <= 0) return res.status(404).send("el usuario no existe");
     // Si existe, eliminamos el usuario por el id
-    await dao.deleteUser(req.params.id)
+    await dao.deleteUser(req.params.id);
     // Devolvemos la respuesta
-    return res.send(`Usuario con id ${req.params.id} eliminado`)
+    return res.send(`Usuario con id ${req.params.id} eliminado`);
   } catch (e) {
     console.log(e.message);
   }
+};
 
-
-}
-
-controller.updateUser= async (req, res) => {
-  const {authorization} = req.headers;
+controller.updateUser = async (req, res) => {
+  const { authorization } = req.headers;
   if (!authorization) {
     return res.sendStatus(401);
   }
   try {
-    if (Object.entries(req.body).length === 0) return res.status(400).send("Body error");
-    await dao.updateUser(req.params.id, req.body)
-    return res.send(`User with id ${req.params.id} has been modified`)
+    if (Object.entries(req.body).length === 0)
+      return res.status(400).send("Body error");
+    await dao.updateUser(req.params.id, req.body);
+    return res.send(`User with id ${req.params.id} has been modified`);
   } catch (e) {
     console.log(e.message);
   }
-}
+};
 
 export default controller;

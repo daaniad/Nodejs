@@ -1,5 +1,4 @@
 import dao from "../Services/dao.js";
-import md5 from "md5";
 import { currentDir } from "../index.js";
 
 const __dirname = currentDir().__dirname;
@@ -13,6 +12,10 @@ controller.uploadImage = async (req, res) => {
       return res.status(400).send("No se ha cargado ningún archivo");
     }
 
+    if (!req.query) {
+      return res.status(400).send("No hay id de producto")
+    }
+
     const images = !req.files.imagen.length
       ? [req.files.imagen]
       : req.files.imagen;
@@ -21,7 +24,7 @@ controller.uploadImage = async (req, res) => {
       image.mv(uploadPath, (err) => {
         if (err) return res.status(500).send(err);
       });
-      await dao.addImage({ name: image.name, path: uploadPath });
+      await dao.addImage({ name: image.name, path: uploadPath, idproducto: req.query.idproducto });
     });
     return res.send("Imagen subida!");
   } catch (e) {
@@ -46,7 +49,7 @@ controller.getImage = async (req, res) => {
 
 controller.addProduct = async (req, res) => {
   // controlar que viene el body
-  const {name, description, price, stock, reference} = req.body;
+  const { name, description, price, stock, reference } = req.body;
   if (!name || !description || !price || !stock || !reference) {
     res.status(400).send("Error al recibir el body");
   }
@@ -56,17 +59,17 @@ controller.addProduct = async (req, res) => {
     if (product.length > 0) return res.status(409).send("Producto ya existe");
     // Si no existe, lo añadimos
     const insertProduct = await dao.insertProduct(req.body);
-    if (insertProduct) return res.send(`Producto ${name} con id${insertProduct} añadido`)
+    if (insertProduct)
+      return res.send(`Producto ${name} con id${insertProduct} añadido`);
   } catch (e) {
     console.log(e.message);
-
   }
   // Buscamos si existe producto por la referencia
   // añadimos producto producto detalle  -> creamos query para añadir producto (insert), creamos el dao
   // nos devuelve el id del producto
-  // utilizamos la libreria express-upload para subir la imagen 
-  // Añadimos el path a la tabla imagen y el id que hemos obtenido del producto 
+  // utilizamos la libreria express-upload para subir la imagen
+  // Añadimos el path a la tabla imagen y el id que hemos obtenido del producto
   // devolvemos respuesta al cliente con el id del producto creado ok
-}
+};
 
 export default controller;

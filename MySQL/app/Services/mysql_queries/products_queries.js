@@ -14,6 +14,7 @@ productQueries.addImage = async (imageData) => {
       nombre: imageData.name,
       path: imageData.path,
       fechaAlta: moment().format("YYYY-MM-DD HH:mm:ss"),
+      idproducto: imageData.idproducto
     };
     return await db.query(
       "INSERT INTO imagenes SET ?",
