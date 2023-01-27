@@ -27,4 +27,6 @@ dao.getProductByRef = async (reference) => await productQueries.getProductByRef(
 // Añadir producto
 dao.insertProduct = async (productData) => await productQueries.addProduct(productData);
 
+dao.getProduct = async () => await productQueries.getProduct();
+
 export default dao;

@@ -72,4 +72,16 @@ controller.addProduct = async (req, res) => {
   // devolvemos respuesta al cliente con el id del producto creado ok
 };
 
+controller.getProduct = async (req, res) => {
+  try {
+    const product = await dao.getProduct();
+    // Si no existe devolvemos un 404 (not found)
+    // Devolvemos la ruta donde se encuentra la imagen
+    return res.send(product);
+  } catch (e) {
+    console.log(e.message);
+    return res.status(400).send(e.message);
+  }
+};
+
 export default controller;
