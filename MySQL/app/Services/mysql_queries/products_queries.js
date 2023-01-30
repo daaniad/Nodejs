@@ -116,7 +116,7 @@ productQueries.getProduct = async () => {
   try {
     conn = await db.createConnection();
     return await db.query(
-      "SELECT * FROM productos",
+      "SELECT * FROM productos JOIN imagenes on productos.id = imagenes.idproducto",
       [],
       "select",
       conn
