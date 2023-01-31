@@ -29,4 +29,6 @@ dao.insertProduct = async (productData) => await productQueries.addProduct(produ
 
 dao.getProduct = async () => await productQueries.getProduct();
 
+dao.getProductById = async (id) => await productQueries.getProductById(id);
+
 export default dao;

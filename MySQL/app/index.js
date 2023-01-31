@@ -7,7 +7,7 @@ import productRouter from "./routes/produtcs_router.js";
 import cors from "cors";
 import fileUpload from "express-fileupload";
 import { fileURLToPath } from "url";
-import { dirname } from "path";
+import { dirname, join } from "path";
 
 // Añadimos el método config de dotenv para utilizar las variables de entorno
 dotenv.config();
@@ -19,6 +19,8 @@ export function currentDir() {
   return { __dirname, __filename };
 }
 
+const {__dirname} = currentDir()
+
 // instanciamos express
 const app = express();
 
@@ -28,6 +30,7 @@ app.use(express.text());
 app.use(logger("dev"));
 app.use(cookieParser());
 app.use(cors());
+app.use(express.static(join(__dirname, "public")));
 app.use(
   fileUpload({
     createParentPath: true, //Crea la carpeta donde almacenamos las imágenes si no ha sido creada

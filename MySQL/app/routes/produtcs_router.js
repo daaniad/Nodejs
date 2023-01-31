@@ -8,5 +8,6 @@ productRouter.get("/image/:id", productController.getImage);
 productRouter.delete("/image/:id", productController.getImage)
 productRouter.post("/add_product", productController.addProduct)
 productRouter.get("/", productController.getProduct)
+productRouter.get("/:id", productController.getProductById)
 
 export default productRouter

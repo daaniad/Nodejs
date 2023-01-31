@@ -11,7 +11,7 @@ productQueries.addImage = async (imageData) => {
     // Creamos un objeto con los dats de la imagen a guardar en la base de datos.
     // Usamos la libreria momentjs para registrar la fecha actual
     let imageObj = {
-      nombre: imageData.name,
+      nombreimg: imageData.name,
       path: imageData.path,
       fechaAlta: moment().format("YYYY-MM-DD HH:mm:ss"),
       idproducto: imageData.idproducto
@@ -36,6 +36,24 @@ productQueries.getImageById = async (id) => {
     conn = await db.createConnection();
     return await db.query(
       "SELECT * FROM imagenes WHERE id = ?",
+      id,
+      "select",
+      conn
+    );
+  } catch (e) {
+    throw new Error(e);
+  } finally {
+    conn && (await conn.end());
+  }
+};
+
+productQueries.getProductById = async (id) => {
+  // Conectamos con la base de datos y buscamos si existe el producto por su id.
+  let conn = null;
+  try {
+    conn = await db.createConnection();
+    return await db.query(
+      "SELECT * FROM productos JOIN imagenes on productos.id = imagenes.idproducto WHERE productos.id = ?",
       id,
       "select",
       conn

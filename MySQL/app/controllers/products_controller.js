@@ -13,18 +13,23 @@ controller.uploadImage = async (req, res) => {
     }
 
     if (!req.query) {
-      return res.status(400).send("No hay id de producto")
+      return res.status(400).send("No hay id de producto");
     }
 
     const images = !req.files.imagen.length
       ? [req.files.imagen]
       : req.files.imagen;
     images.forEach(async (image) => {
-      let uploadPath = "/public/images/products" + image.name;
+      let uploadPath = __dirname + "/public/images/" + image.name;
+      let BBDDPath = "images/" + image.name;
       image.mv(uploadPath, (err) => {
         if (err) return res.status(500).send(err);
       });
-      await dao.addImage({ name: image.name, path: uploadPath, idproducto: req.query.idproducto });
+      await dao.addImage({
+        name: image.name,
+        path: BBDDPath,
+        idproducto: req.query.idproducto,
+      });
     });
     return res.send("Imagen subida!");
   } catch (e) {
@@ -40,7 +45,7 @@ controller.getImage = async (req, res) => {
     // Si no existe devolvemos un 404 (not found)
     if (image.length <= 0) return res.status(404).send("La imagen no existe");
     // Devolvemos la ruta donde se encuentra la imagen
-    return res.sendFile(image[0].path, {root : __dirname});
+    return res.sendFile(image[0].path, { root: __dirname });
     //return res.send({ path: image[0].path });
   } catch (e) {
     console.log(e.message);
@@ -85,4 +90,15 @@ controller.getProduct = async (req, res) => {
   }
 };
 
+controller.getProductById = async (req, res) => {
+  try {
+    const product = await dao.getProductById(req.params.id);
+    // Si no existe devolvemos un 404 (not found)
+    // Devolvemos la ruta donde se encuentra la imagen
+    return res.send(product[0]);
+  } catch (e) {
+    console.log(e.message);
+    return res.status(400).send(e.message);
+  }
+};
 export default controller;
