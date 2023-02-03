@@ -36,7 +36,7 @@ controller.loginUser = async (req, res) => {
     const jwtConstructor = new SignJWT({
       id: user.id,
       email,
-      nombre: user.name,
+      nombre: user.nombre,
       role: user.role,
     });
 
